@@ -15,7 +15,7 @@ public interface SomeWindowStrings {
 }
 ```
 
-And just make a `SomeWindowSettings` ResourceBundle bundle somewhere..
+And just make a `SomeWindowSettings` resource bundle somewhere..
 ```
 title=Greetings!
 greet=Hi there, %s! I'm a just a tool, but I'll greet you anyway! Nice to meet you!
@@ -29,7 +29,7 @@ titleLabel.bind(myStrings.title());
 greetingLabel.bind(myStrings.greet(fullName));
 ```
 
-And then be able to update all of your text to the chosen translation
+And be able to update all of your UI text to the chosen translation
 instantly, just by changing the locale?
 
 ```
@@ -37,22 +37,5 @@ myLocale.setValue(someLocale);
 // or strings.setLocale(someLocale)
 ```
 
-If so, then this is that project.
-
-## Project goals
-This project aims to maintain the following:
-
-* **Simplicity**: The API must be extremely simple, users should have
-  close to no confusion as to what it is capable of doing or not.
-  For additional functionality, this project can be extended by a
-  dependent project.
-* **Flexibility**: With the exception of JavaFX, this project must have
-  no other dependencies. Each API dependency must be decoupled by an
-  interface so that users can change underlying parts with ease.
-* **Non-intrusiveness**: Aims to achieve the least impact on dependent
-  codebases -- Require as little types special to this library to be
-  passed around. Least amount of refactoring if one chooses to
-  remove dependency of this library.
-* **Testability**: Code implementing the paradigms advocated by or
-  the types of this library should be easy to mock without any special
-  tools. 
+If so, then this is that project. But it's in its infancy. So stay tuned,
+or help if you won't take it personally if your pull request is rejected.
