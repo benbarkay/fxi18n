@@ -25,8 +25,8 @@ And then just have it work, perhaps like this?
 
 ```
 SomeWindowStrings myStrings = strings.get(SomeWindowStrings.class);
-titleLabel.bind(myStrings.title());
-greetingLabel.bind(myStrings.greet(fullName));
+titleLabel.textProperty().bind(myStrings.title());
+greetingLabel.textProperty().bind(myStrings.greet(fullName));
 ```
 
 And be able to update all of your UI text to the chosen translation
