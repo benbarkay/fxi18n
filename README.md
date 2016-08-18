@@ -5,63 +5,39 @@ string repository mechanisms for UI views or controllers.
 
 ## In a nutshell
 
+Have you wished at some point that you could just do something of
+this sort?
+
 ```
-// Initialize an instance of `Strings` somewhere in our code
-// The following is a verbose example of default settings, one could
-// call `Strings.createDefault()` in order to obtain a default instance.
-Property<Locale> localeProperty = new SimpleObjectProperty<>(Locale.getDefault());
-Strings strings = Strings.builder()
-    .locale(localeProperty)
-    .formatter(new DefaultStringFormatter())
-    .repositoryFactory(new ResourceBundleRepositoryFactory())
-    .build();
-
-// An interface denoting strings required by LoginWindow.
-// Let's assume its fully qualified name is `example.login.LoginStrings`
-public interface LoginStrings {
-    ObservableStringValue username();
-    ObservableStringValue password();
-}
-
-// Resource `/example/login/LoginStrings.properties`
-username=How do you call yourself online?
-password=What is your secret phrase?
-
-// Implementation of LoginWindow controller
-public class LoginWindowController {
-    @FXML
-    Label usernameLabel;
-    
-    @FXML
-    Label passwordLabel;
-    
-    // irrelevant code excluded
-    public void bindStrings(LoginStrings loginStrings) {
-        usernameLabel.textProperty().bind(loginStrings.username());
-        passwordLabel.textProperty().bind(loginStrings.password());
-    }
-}
-
-public class LoginWindowFactory {
-    private final Strings strings;
-    // more instance variables, constructor etc...
-    public LoginWindow newLoginWindow() {
-        LoginWindowController controller;
-        // FXML or other initialization code ...
-        controller.bindStrings(strings.get(LoginStrings.class));
-    }
+public interface SomeWindowStrings {
+    ObservableStringValue title();
+    ObservableStringValue greet(String name);
 }
 ```
 
-Using the above setup, if we for example have a German translation,
-we could simply do the following:
+And just make a `SomeWindowSettings` ResourceBundle bundle somewhere..
+```
+title=Greetings!
+greet=Hi there, %s! I'm a just a tool, but I'll greet you anyway! Nice to meet you!
+```
+
+And then just have it work, perhaps like this?
 
 ```
-localeProperty.setValue(Locale.GERMAN);
+SomeWindowStrings myStrings = strings.get(SomeWindowStrings.class);
+titleLabel.bind(myStrings.title());
+greetingLabel.bind(myStrings.greet(fullName));
 ```
 
-And our UI will have updated to the correct German strings. We can
-also use `Strings#setLocale(Locale)` to achieve the same effect.
+And then be able to update all of your text to the chosen translation
+instantly, just by changing the locale?
+
+```
+myLocale.setValue(someLocale);
+// or strings.setLocale(someLocale)
+```
+
+If so, then this is that project.
 
 ## Project goals
 This project aims to maintain the following:
