@@ -15,7 +15,7 @@ public interface SomeWindowStrings {
 }
 ```
 
-And just make a `SomeWindowSettings` resource bundle somewhere..
+And just make a `SomeWindowStrings` resource bundle somewhere..
 ```
 title=Greetings!
 greet=Hi there, %s! I'm a just a tool, but I'll greet you anyway! Nice to meet you!
