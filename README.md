@@ -41,7 +41,7 @@ work?
 
 ```
 progressProperty.setValue(35.5);
-statusTextProperty.setValue(myStrings.bakingBread());
+statusTextProperty.bind(myStrings.bakingBread());
 // resulting in "Progress is at 35.5, baking bread..."
 ```
 
