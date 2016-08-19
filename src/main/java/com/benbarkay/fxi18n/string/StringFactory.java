@@ -21,15 +21,22 @@ public class StringFactory {
             String key,
             Object[] args,
             ObservableValue<StringRepository> observableRepository) {
+        if (args == null) {
+            args = new Object[0];
+        }
+
         SimpleStringProperty stringProperty = new SimpleStringProperty();
-        StringUpdater updater = new StringUpdater(
-                new WeakReference<StringProperty>(stringProperty),
+        ObservableValue<Object[]> formatArguments = FormatArguments.forArguments(args);
+        StringUpdater stringUpdater = new StringUpdater(
                 key,
-                args,
+                formatArguments,
+                observableRepository,
+                new WeakReference<StringProperty>(stringProperty),
                 stringFormatter
         );
-        observableRepository.addListener(updater);
-        updater.changed(null, null, observableRepository.getValue());
+        formatArguments.addListener(stringUpdater);
+        observableRepository.addListener(stringUpdater);
+        stringUpdater.update();
         return stringProperty;
     }
 }

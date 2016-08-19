@@ -2,40 +2,50 @@ package com.benbarkay.fxi18n.string;
 
 import com.benbarkay.fxi18n.StringFormatter;
 import com.benbarkay.fxi18n.StringRepository;
+import com.benbarkay.fxi18n.util.Stub;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
 import java.lang.ref.WeakReference;
 
-class StringUpdater implements ChangeListener<StringRepository> {
+class StringUpdater implements InvalidationListener {
 
-    private final WeakReference<StringProperty> weakStringProperty;
+    private static final Observable STUB_OBSERVER = new Stub<>(Observable.class).thatReturns(null);
+
     private final String key;
-    private final Object[] arguments;
+    private final ObservableValue<Object[]> arguments;
+    private final ObservableValue<StringRepository> observableRepository;
+    private final WeakReference<StringProperty> stringPropertyRef;
     private final StringFormatter formatter;
 
     StringUpdater(
-            WeakReference<StringProperty> weakStringProperty,
             String key,
-            Object[] arguments,
+            ObservableValue<Object[]> arguments,
+            ObservableValue<StringRepository> observableRepository,
+            WeakReference<StringProperty> stringPropertyRef,
             StringFormatter formatter) {
-        this.weakStringProperty = weakStringProperty;
         this.key = key;
         this.arguments = arguments;
+        this.observableRepository = observableRepository;
+        this.stringPropertyRef = stringPropertyRef;
         this.formatter = formatter;
     }
 
     @Override
-    public void changed(
-            ObservableValue<? extends StringRepository> observable,
-            StringRepository oldRepository,
-            StringRepository repository) {
-        StringProperty string = weakStringProperty.get();
-        if (string == null) {
-            observable.removeListener(this);
+    public void invalidated(Observable observable) {
+        StringProperty property = stringPropertyRef.get();
+        if (property != null) {
+            property.setValue(formatter.format(
+                    observableRepository.getValue().getString(key),
+                    arguments.getValue()));
         } else {
-            string.setValue(formatter.format(repository.getString(key), arguments));
+            observable.removeListener(this);
         }
+    }
+
+    public void update() {
+        invalidated(STUB_OBSERVER);
     }
 }

@@ -4,7 +4,9 @@ import com.benbarkay.fxi18n.formatters.DefaultStringFormatter;
 import com.benbarkay.fxi18n.repositories.map.MapRepositoryFactory;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableStringValue;
+import javafx.beans.value.ObservableValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,6 +20,7 @@ public class StringsTest {
     interface TestStrings {
         ObservableStringValue test();
         ObservableStringValue formattedTest(String text, int number);
+        ObservableStringValue formattedPropertyTest(ObservableValue<String> text);
     }
 
     private Property<Locale> localeProperty;
@@ -58,6 +61,17 @@ public class StringsTest {
                 Collections.singletonMap("formattedTest", "%s %d"));
         TestStrings testStrings = strings.get(TestStrings.class);
         assertEquals("test 123", testStrings.formattedTest("test", 123).getValue());
+    }
+
+    @Test
+    public void itUpdatesStringWhenPropertyArgumentChanges() {
+        repositoryFactory.putStrings(TestStrings.class, Locale.getDefault(),
+                Collections.singletonMap("formattedPropertyTest", "%s!"));
+        TestStrings testStrings = strings.get(TestStrings.class);
+        Property<String> stringProperty = new SimpleStringProperty("foo");
+        ObservableStringValue formattedPropertyTest = testStrings.formattedPropertyTest(stringProperty);
+        stringProperty.setValue("bar");
+        assertEquals("bar!", formattedPropertyTest.getValue());
     }
 
     @Test
